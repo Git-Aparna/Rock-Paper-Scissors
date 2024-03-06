@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock Paper Scissors Game</title>
+<style>
+  body {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    background-color: #fc92ae;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    color: black;
+  }
+
+  #game-container {
+    background-color: #f9ece9;
+    width: 50%;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #ffd3dc;
+    color: darkred;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }
+
+  #outcome {
+    font-size: 20px;
+    margin-top: 20px;
+    color: #ff1a01;
+  }
+
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 20% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div id="game-container">
+  <h1>Rock Paper Scissors</h1>
+  <p>Make your choice:</p>
+  <button onclick="openModal()">Choose Game Type</button>
+
+  <div id="gameModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p>What type would you prefer?</p>
+      <button onclick="playGame(1)">1 chance-game</button>
+      <button onclick="playGame(3)">Best of Three</button>
+      <button onclick="playGame(5)">Best of Five</button>
+    </div>
+  </div>
+
+  <div id="choiceModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p>Choose your option:</p>
+      <button onclick="getUserChoice(0)">Rock</button>
+      <button onclick="getUserChoice(1)">Paper</button>
+      <button onclick="getUserChoice(2)">Scissors</button>
+    </div>
+  </div>
+
+  <div id="outcome"></div>
+
+  <script>
+    const choices = ['Rock', 'Paper', 'Scissors'];
+    let currentRound = 0;
+    let userWins = 0;
+    let computerWins = 0;
+    let totalRounds = 0;
+
+    function openModal() {
+      document.getElementById('gameModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('gameModal').style.display = 'none';
+      document.getElementById('choiceModal').style.display = 'none';
+    }
+
+    function playGame(rounds) {
+      totalRounds = rounds;
+      currentRound = 0;
+      userWins = 0;
+      computerWins = 0;
+      document.getElementById('outcome').innerHTML = '';
+      closeModal();
+      showModal();
+    }
+
+    function showModal() {
+      currentRound++;
+      document.getElementById('choiceModal').style.display = 'block';
+    }
+
+    function getUserChoice(choice) {
+      const userChoice = choices[choice];
+      const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+      const result = determineWinner(userChoice, computerChoice);
+      displayResult(userChoice, computerChoice, result);
+      if (currentRound < totalRounds) {
+        showModal();
+      } else {
+        endGame();
+      }
+    }
+
+    function determineWinner(user, computer) {
+      if (
+        (user === 'Rock' && computer === 'Scissors') ||
+        (user === 'Paper' && computer === 'Rock') ||
+        (user === 'Scissors' && computer === 'Paper')
+      ) {
+        userWins++;
+        return 'You win!';
+      } else if (user === computer) {
+        return 'It\'s a draw!';
+      } else {
+        computerWins++;
+        return 'You lose!';
+      }
+    }
+
+    function displayResult(userChoice, computerChoice, result) {
+      const outcome = `${userChoice} vs ${computerChoice}. ${result}`;
+      document.getElementById('outcome').innerHTML += `<p>${outcome}</p>`;
+    }
+
+    function endGame() {
+      let gameResult;
+      if (userWins > computerWins) {
+        gameResult = 'You win the game!';
+      } else if (userWins < computerWins) {
+        gameResult = 'You lose the game!';
+      } else {
+        gameResult = 'It\'s a tie!';
+      }
+      document.getElementById('outcome').innerHTML += `<p>${gameResult}</p>`;
+      document.getElementById('choiceModal').style.display = 'none';
+    }
+  </script>
+</div>
+</body>
+</html>
